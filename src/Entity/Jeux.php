@@ -24,6 +24,10 @@ class Jeux
     #[ORM\Column(type: 'integer')]
     private int $ponderation = 1;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user', referencedColumnName: 'discord_id', nullable: false)]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -70,6 +74,18 @@ class Jeux
     public function setPonderation(int $ponderation): self
     {
         $this->ponderation = $ponderation;
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
         return $this;
     }
 }

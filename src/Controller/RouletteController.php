@@ -24,6 +24,7 @@ final class RouletteController extends AbstractController
                 'value' => $jeu->getPonderation(),
                 'url' => $jeu->getUrl(),
                 'prix' => $jeu->getPrix(),
+                'user' => $jeu->getUser()->getPseudo(),
             ];
         }
 
@@ -52,6 +53,7 @@ final class RouletteController extends AbstractController
                 $this->addFlash('success', 'La pondération du jeu existant a été augmentée.');
             } else {
                 $jeu->setNom($nomNormalise);
+                $jeu->setUser($this->getUser());
                 $entityManager->persist($jeu);
                 $entityManager->flush();
                 $this->addFlash('success', 'Le jeu a été créé avec succès.');

@@ -71,6 +71,8 @@ class DiscordAuthenticator extends OAuth2Authenticator
                     // Créez un nouvel utilisateur si nécessaire
                     $user = new \App\Entity\User();
                     $user->setDiscordId($discordData['id']);
+                    $user->setAvatar($discordData['avatar']);
+                    $user->setPseudo($discordData['username']);
 
                     // Sauvegardez l'utilisateur dans la base de données
                     $this->entityManager->persist($user);

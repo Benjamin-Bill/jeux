@@ -84,7 +84,8 @@
                 {
             "label" : " {{ item.label }}",
             "value": {{ item.value }},
-            "question":"{{ item.question }}"
+            "question":"{{ item.question }}",
+            "user":"{{ item.user }}"
             }
         );
     {% endfor %}
@@ -178,7 +179,7 @@
 
                 //populate question
                 d3.select("#question h1")
-                    .text(data[picked].question);
+                    .text(data[picked].question + '\n' +'proposé par ' + data[picked].user);
 
                 oldrotation = rotation;
 

@@ -14,7 +14,10 @@ class DiscordController extends AbstractController
     public function connect(ClientRegistry $clientRegistry): Response
     {
         // Redirige l'utilisateur vers Discord
-        return $clientRegistry->getClient('discord')->redirect();
+        return $clientRegistry->getClient('discord')->redirect([
+            'identify',
+            'email',
+        ]);
     }
 
     #[Route('/connect/discord/check', name: 'connect_discord_check')]
