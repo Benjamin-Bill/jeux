@@ -1,0 +1,15 @@
+# config/packages/knpu_oauth2_client.yaml
+knpu_oauth2_client:
+  clients:
+    # the key "facebook_main" can be anything, it
+    # will create a service: "knpu.oauth2.client.facebook_main"
+    discord:
+      # this will be one of the supported types
+      type: discord
+      client_id: '%env(OAUTH_DISCORD_ID)%'
+      client_secret: '%env(OAUTH_DISCORD_SECRET)%'
+      # the route that you're redirected to after
+      # see the controller example below
+      redirect_route: connect_discord_check
+      redirect_params: {}
+

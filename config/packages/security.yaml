@@ -1,0 +1,21 @@
+security:
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: discordId
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            custom_authenticators:
+                - App\Security\DiscordAuthenticator
+            logout:
+                path: app_logout
+            # Autres options...
+
+    access_control:
+        - { path: ^/connect, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: ROLE_USER }

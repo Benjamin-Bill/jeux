@@ -1,0 +1,98 @@
+
+*.pdf
+*.php_*
+*.sql
+*.sql.gz
+*.csv
+*.bkp
+*.tar
+*.tgz
+*.lock
+.git.SUPPR/
+var.*
+data/*
+*#
+*~
+tests_fonctionnels/sql/*
+web/tmp/*
+*.lock
+/app/config/parameters.yml
+/app/config/parameters.*.yml
+parameters.yaml
+/mesocentres/**/colors.css
+templates.AJETER/
+templates/default/mentions.html.twig
+reprise
+MESONET
+VERSION
+mesocentres/
+/build/
+/phpunit.xml
+/var/CACHEDIR.TAG
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/log
+/var/log/*
+!var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
+/web/bundles/
+public/icones/favicon.ico
+public/icones/header.png
+public/index.php
+public/css/colors.css
+
+config/adresses.txt
+
+.env
+.env.local
+adminer\.php
+
+vendor/**
+tools/phpstan/**
+tools/php-cs-fixer/**
+
+doc/documentation-dev.odt
+doc/uml/gramc-meso0.uml
+doc/uml/gramc3-notes.md
+doc/uml/sequence_nouv_collab.uml
+
+doc/**/*.png
+
+### jpgraph
+jpgraph
+jpgraph-4.3.4/
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+.idea/
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
