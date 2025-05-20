@@ -109,4 +109,13 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getAvatarImage(): ?string
+    {
+        if (!$this->avatar) {
+            return null;
+        }
+
+        return sprintf('https://cdn.discordapp.com/avatars/%s/%s.png', $this->discordId, $this->avatar);
+    }
 }

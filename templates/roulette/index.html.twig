@@ -85,7 +85,8 @@
             "label" : " {{ item.label }}",
             "value": {{ item.value }},
             "question":"{{ item.question }}",
-            "user":"{{ item.user }}"
+            "user":"{{ item.user }}",
+            "avatar":"{{ asset(item.avatar) }}"
             }
         );
     {% endfor %}
@@ -179,10 +180,7 @@
 
                 //populate question
                 d3.select("#question h1")
-                    .text(data[picked].question + '\n' +'proposé par ' + data[picked].user);
-
-                oldrotation = rotation;
-
+                    .html(data[picked].question + '<br>proposé par <strong>' + data[picked].user + '</strong><br><img src="' + data[picked].avatar + '" alt="Image" style="width:50px;height:50px;border-radius:50%;">');
                 container.on("click", spin);
             });
     }

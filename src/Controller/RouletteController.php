@@ -25,6 +25,7 @@ final class RouletteController extends AbstractController
                 'url' => $jeu->getUrl(),
                 'prix' => $jeu->getPrix(),
                 'user' => $jeu->getUser()->getPseudo(),
+                'avatar' => $jeu->getUser()->getAvatarImage(),
             ];
         }
 
