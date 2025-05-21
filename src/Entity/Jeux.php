@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -24,9 +26,35 @@ class Jeux
     #[ORM\Column(type: 'integer')]
     private int $ponderation = 1;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'user', referencedColumnName: 'discord_id', nullable: false)]
-    private ?User $user = null;
+    /**
+     * @var Collection<int, User>
+     */
+
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'jeuxes')]
+    #[ORM\JoinTable(name: 'jeux_users')]
+    #[ORM\JoinColumn(name: 'jeux_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'discord_id')]
+    private Collection $Users;
+
+    #[ORM\Column]
+    private ?int $Min_player = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $Max_player = null;
+
+    /**
+     * @var Collection<int, Valide>
+     */
+    #[ORM\OneToMany(targetEntity: Valide::class, mappedBy: 'jeu')]
+    private Collection $valides;
+
+
+    public function __construct()
+    {
+        $this->Users = new ArrayCollection();
+        $this->valides = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -77,15 +105,84 @@ class Jeux
         return $this;
     }
 
-    public function getUser(): ?User
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
     {
-        return $this->user;
+        return $this->Users;
     }
 
-    public function setUser(?User $user): static
+    public function addUser(User $user): static
     {
-        $this->user = $user;
+        if (!$this->Users->contains($user)) {
+            $this->Users->add($user);
+        }
 
         return $this;
     }
+
+    public function removeUser(User $user): static
+    {
+        $this->Users->removeElement($user);
+
+        return $this;
+    }
+
+    public function getMinPlayer(): ?int
+    {
+        return $this->Min_player;
+    }
+
+    public function setMinPlayer(int $Min_player): static
+    {
+        $this->Min_player = $Min_player;
+
+        return $this;
+    }
+
+    public function getMaxPlayer(): ?int
+    {
+        return $this->Max_player;
+    }
+
+    public function setMaxPlayer(?int $Max_player): static
+    {
+        $this->Max_player = $Max_player;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Valide>
+     */
+    public function getValides(): Collection
+    {
+        return $this->valides;
+    }
+
+    public function addValide(Valide $valide): static
+    {
+        if (!$this->valides->contains($valide)) {
+            $this->valides->add($valide);
+            $valide->setJeu($this);
+        }
+
+        return $this;
+    }
+
+    public function removeValide(Valide $valide): static
+    {
+        if ($this->valides->removeElement($valide)) {
+            // set the owning side to null (unless already changed)
+            if ($valide->getJeu() === $this) {
+                $valide->setJeu(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
 }

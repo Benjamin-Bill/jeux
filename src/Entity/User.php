@@ -24,9 +24,12 @@ class User implements UserInterface
     /**
      * @var Collection<int, Jeux>
      */
-    #[ORM\OneToMany(targetEntity: Jeux::class, mappedBy: 'user')]
+    #[ORM\ManyToMany(targetEntity: Jeux::class, mappedBy: 'Users')]
     private Collection $jeuxes;
 
+    /**
+     * @var Collection<int, Jeux>
+     */
     public function __construct()
     {
         $this->jeuxes = new ArrayCollection();
@@ -80,6 +83,16 @@ class User implements UserInterface
         return $this;
     }
 
+
+    public function getAvatarImage(): ?string
+    {
+        if (!$this->avatar) {
+            return null;
+        }
+
+        return sprintf('https://cdn.discordapp.com/avatars/%s/%s.png', $this->discordId, $this->avatar);
+    }
+
     /**
      * @return Collection<int, Jeux>
      */
@@ -92,7 +105,7 @@ class User implements UserInterface
     {
         if (!$this->jeuxes->contains($jeux)) {
             $this->jeuxes->add($jeux);
-            $jeux->setUser($this);
+            $jeux->addUser($this);
         }
 
         return $this;
@@ -101,21 +114,9 @@ class User implements UserInterface
     public function removeJeux(Jeux $jeux): static
     {
         if ($this->jeuxes->removeElement($jeux)) {
-            // set the owning side to null (unless already changed)
-            if ($jeux->getUser() === $this) {
-                $jeux->setUser(null);
-            }
+            $jeux->removeUser($this);
         }
 
         return $this;
-    }
-
-    public function getAvatarImage(): ?string
-    {
-        if (!$this->avatar) {
-            return null;
-        }
-
-        return sprintf('https://cdn.discordapp.com/avatars/%s/%s.png', $this->discordId, $this->avatar);
     }
 }

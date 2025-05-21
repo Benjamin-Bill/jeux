@@ -53,8 +53,21 @@
             padding: 0;
             margin: 0;
             top:50%;
-            -webkit-transform:translate(0,-50%);
             transform:translate(0,-50%);
+        }
+        #countdown {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #chart circle {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        #chart.active circle {
+            pointer-events: auto;
+            opacity: 1;
         }
     </style>
 
@@ -62,6 +75,56 @@
 <body>
 <div id="chart"></div>
 <div id="question"><h1></h1></div>
+<div id="countdown"></div>
+<script>
+    const tirageActif = {{ tirageActif ? 'true' : 'false' }};
+    const prochainTirage = new Date("{{ prochainTirage ? prochainTirage.format('Y-m-d H:i:s') : '' }}");
+
+    // Désactiver le clic sur la roue
+    function disableSpin() {
+        container.on("click", null);
+        document.getElementById('chart').classList.remove('active');
+    }
+    function enableSpin() {
+        container.on("click", spin);
+        document.getElementById('chart').classList.add('active');
+    }
+
+    function updateCountdown() {
+        const now = new Date();
+        const diff = prochainTirage - now;
+
+
+        if (diff <= 0) {
+            document.getElementById('countdown').innerText = "Le tirage est en cours !";
+            document.getElementById('chart').classList.add('active');
+            container.on("click", spin); // Activer le clic sur la roue
+            return;
+        }
+
+        disableSpin(); // Désactiver le clic sur la roue
+
+
+        const heures = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secondes = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('countdown').innerText = `Prochain tirage dans : ${heures}h ${minutes}m ${secondes}s`;
+    }
+
+    if (tirageActif) {
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    } else {
+        disableSpin();
+    }
+</script>
+<div id="validate-choice" style="display: none; text-align: center; margin-top: 20px;">
+    <form method="post" action="{{ path('validate_game') }}">
+        <input type="hidden" name="game_id" id="game_id" value="">
+        <button type="submit" class="btn btn-success">Valider le choix</button>
+    </form>
+</div>
 
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
@@ -152,9 +215,9 @@
 
         var  ps       = 360/data.length,
             pieslice = Math.round(1440/data.length),
-            rng      = Math.floor((Math.random() * 1440) + 360);
-
-        rotation = (Math.round(rng / ps) * ps);
+            rng      = rng = (data.length - {{ rand }}) * ps; // Ajustez pour viser l'index
+        var extraRotations = 5 * 360;
+        rotation = extraRotations +(Math.round(rng / ps) * ps);
 
         picked = Math.round(data.length - (rotation % 360)/ps);
         picked = picked >= data.length ? (picked % data.length) : picked;
@@ -182,6 +245,9 @@
                 d3.select("#question h1")
                     .html(data[picked].question + '<br>proposé par <strong>' + data[picked].user + '</strong><br><img src="' + data[picked].avatar + '" alt="Image" style="width:50px;height:50px;border-radius:50%;">');
                 container.on("click", spin);
+                // Afficher le bouton de validation
+                document.getElementById('validate-choice').style.display = 'block';
+                document.getElementById('game_id').value = data[picked].label; // Assurez-vous que l'ID du jeu est dans `data`
             });
     }
 

@@ -1,0 +1,23 @@
+<form method="post">
+    <h3>Choisir le jour pour "Jeu"</h3>
+    <select name="jeu">
+        <option value="">Aucun</option>
+        {% for jour in jours %}
+            <option value="{{ jour.id }}" {{ jour.jeu ? 'selected' : '' }}>
+                {{ jour.jour }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <h3>Choisir le jour pour "Tirage"</h3>
+    <select name="tirage">
+        <option value="">Aucun</option>
+        {% for jour in jours %}
+            <option value="{{ jour.id }}" {{ jour.tirage ? 'selected' : '' }}>
+                {{ jour.jour }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Enregistrer</button>
+</form>

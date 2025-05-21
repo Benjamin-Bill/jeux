@@ -26,7 +26,16 @@ class JeuxType extends AbstractType
             ->add('prix', NumberType::class, [
                 'label' => 'Prix',
                 'required' => true,
+            ])
+            ->add('min_player', NumberType::class, [
+                'label' => 'Nombre minimum de joueurs',
+                'required' => true,
+            ])
+            ->add('max_player', NumberType::class, [
+                'label' => 'Nombre maximum de joueurs',
+                'required' => false,
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
