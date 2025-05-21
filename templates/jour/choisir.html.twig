@@ -19,5 +19,8 @@
         {% endfor %}
     </select>
 
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
     <button type="submit">Enregistrer</button>
 </form>

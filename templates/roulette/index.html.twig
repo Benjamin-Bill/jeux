@@ -69,6 +69,23 @@
             pointer-events: auto;
             opacity: 1;
         }
+        #form-container {
+                 position: fixed;
+                 top: 50%;
+                 right: 20px;
+                 transform: translateY(-50%);
+                 width: 300px;
+                 padding: 20px;
+                 background-color: #f9f9f9;
+                 border: 1px solid #ddd;
+                 border-radius: 8px;
+                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #form-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
     </style>
 
 </head>
@@ -76,6 +93,9 @@
 <div id="chart"></div>
 <div id="question"><h1></h1></div>
 <div id="countdown"></div>
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">{{ message }}</div>
+{% endfor %}
 <script>
     const tirageActif = {{ tirageActif ? 'true' : 'false' }};
     const prochainTirage = new Date("{{ prochainTirage ? prochainTirage.format('Y-m-d H:i:s') : '' }}");
@@ -124,6 +144,15 @@
         <input type="hidden" name="game_id" id="game_id" value="">
         <button type="submit" class="btn btn-success">Valider le choix</button>
     </form>
+</div>
+<div id="form-container">
+<form method="post">
+    {{ form_start(form) }}
+    {{ form_row(form.maxPlayers) }}
+    {{ form_row(form.maxPrice) }}
+    {{ form_row(form.submit) }}
+    {{ form_end(form) }}
+</form>
 </div>
 
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>

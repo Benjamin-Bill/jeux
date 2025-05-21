@@ -3,4 +3,8 @@
 {% block body %}
     <h1>Bienvenue</h1>
     <a href="{{ path('connect_discord_start') }}" class="btn btn-primary">Se connecter avec Discord</a>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
 {% endblock %}

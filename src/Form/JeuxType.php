@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Form;
 
 use App\Entity\Jeux;
@@ -25,17 +24,18 @@ class JeuxType extends AbstractType
             ])
             ->add('prix', NumberType::class, [
                 'label' => 'Prix',
-                'required' => true,
+                'required' => false,
+                'empty_data' => '0', // Valeur par défaut si non remplie
             ])
             ->add('min_player', NumberType::class, [
                 'label' => 'Nombre minimum de joueurs',
-                'required' => true,
+                'required' => false,
+                'empty_data' => '1', // Valeur par défaut si non remplie
             ])
             ->add('max_player', NumberType::class, [
                 'label' => 'Nombre maximum de joueurs',
                 'required' => false,
             ]);
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void

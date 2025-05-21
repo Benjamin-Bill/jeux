@@ -7,6 +7,8 @@ use App\Entity\Jour;
 use App\Form\JeuxType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,14 +16,34 @@ use Symfony\Component\Routing\Attribute\Route;
 final class RouletteController extends AbstractController
 {
     #[Route('/roulette', name: 'app_roulette')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager,Request $request): Response
     {
         $jeux = $entityManager->getRepository(Jeux::class)->findAll();
         $jours = $entityManager->getRepository(Jour::class)->findAll();
 
+
         $transmit = [];
         $i=0;
 
+        $form = $this->createFormBuilder()
+            ->add('maxPlayers', NumberType::class, [
+                'required' => false,
+                'label' => 'Nombre maximum de joueurs',
+            ])
+            ->add('maxPrice', NumberType::class, [
+                'required' => false,
+                'label' => 'Prix maximum',
+            ])
+            ->add('submit', SubmitType::class, ['label' => 'Filtrer les jeux'])
+            ->getForm();
+        $form->handleRequest($request);
+        $maxPlayers = null;
+        $maxPrice = null;
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $maxPlayers = $data['maxPlayers'];
+            $maxPrice = $data['maxPrice'];
+        }
         $tirageActif = false;
         $prochainTirage = null;
         foreach ($jours as $jour) {
@@ -31,7 +53,7 @@ final class RouletteController extends AbstractController
                 // Calculer le prochain tirage (19h à 22h)
                 $parisTimeZone = new \DateTimeZone('Europe/Paris');
                 $now = new \DateTime('now', $parisTimeZone);
-                $prochainTirage = new \DateTime('today 19:00', $parisTimeZone);
+                $prochainTirage = new \DateTime('today 15:00', $parisTimeZone);
 
                 if ($now > new \DateTime('today 22:00', $parisTimeZone)) {
                     $prochainTirage = new \DateTime('tomorrow 19:00', $parisTimeZone);
@@ -54,7 +76,7 @@ final class RouletteController extends AbstractController
             $i++;
         }
         $taille = count($transmit);
-        $jeu = $this->selectGame($jeux);
+        $jeu = $this->selectGame($jeux, $maxPlayers, $maxPrice);
 
         $rand = null;
         foreach ($transmit as $index => $item) {
@@ -70,6 +92,7 @@ final class RouletteController extends AbstractController
             'rand' => $rand,
             'tirageActif' => $tirageActif,
             'prochainTirage' => $prochainTirage,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -121,8 +144,9 @@ final class RouletteController extends AbstractController
         $filteredGames = array_filter($games, function (Jeux $game) use ($maxPlayers, $maxPrice) {
             $isValid = true;
 
+            // Vérifier que le maxPlayer du jeu est supérieur ou égal à la valeur entrée
             if ($maxPlayers !== null) {
-                $isValid = $isValid && ($game->getMaxPlayer() === null || $game->getMaxPlayer() <= $maxPlayers);
+                $isValid = $isValid && ($game->getMaxPlayer() === null || $game->getMaxPlayer() >= $maxPlayers);
             }
 
             if ($maxPrice !== null) {
